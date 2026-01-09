@@ -1,19 +1,18 @@
-# Compiled executables
-*.exe
-*.out
-a.out
-a.exe
-
-# Object files
+# Create .gitignore
+cat > .gitignore << 'EOF'
+# Compiled Object files
 *.o
 *.obj
+*.exe
+*.out
+*.app
 
 # Build directories
+build/
 bin/
 obj/
-build/
 
-# IDE/Editor files
+# IDE files
 .vscode/
 .idea/
 *.swp
@@ -24,5 +23,7 @@ build/
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# Executable
+voting_system
+voting_system.exe
+EOF

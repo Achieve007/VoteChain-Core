@@ -1,42 +1,28 @@
-#include "../include/Block.h"
+// src/Block.cpp
+// Implementation of Block class methods
+
+#include "Block.h"
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
-// Constructor - creates a new block
-Block::Block(int idx, const std::string& prevHash) 
+// Constructor: Initialize block with index and previous hash, then calculate its hash
+Block::Block(int idx, const std::string& prevHash)
     : index(idx), previousHash(prevHash) {
-    timestamp = time(nullptr);
-    hash = calculateHash();  // Calculate hash when block is created
-}
-
-// Add a vote to this block
-void Block::addVote(const Vote& vote) {
-    votes.push_back(vote);
-    // Recalculate hash after adding vote
+    // Set creation timestamp
+    timestamp = std::time(nullptr);
+    // Calculate and store this block's hash
     hash = calculateHash();
 }
 
-// Dummy hash function (Day 1-2) - will be replaced with SHA-256 later
-std::string Block::calculateHash() const {
-    std::ostringstream oss;
-    
-    // Combine all block data into one string
-    oss << index << previousHash << timestamp;
-    
-    // Add all votes to the hash calculation
-    for (const auto& vote : votes) {
-        oss << vote.toString();
-    }
-    
-    // For now, just return a simple "hash" (dummy)
-    // We'll replace this with real SHA-256 on Day 3-4
-    std::string data = oss.str();
-    std::string dummyHash = "HASH_" + std::to_string(data.length()) + "_" + std::to_string(index);
-    
-    return dummyHash;
+// Add a vote to this block's transaction list
+void Block::addVote(const Vote& vote) {
+    votes.push_back(vote);
+    // Recalculate hash since block content changed
+    hash = calculateHash();
 }
 
-// Getter methods
+// Getter implementations
 int Block::getIndex() const {
     return index;
 }
@@ -49,7 +35,7 @@ std::string Block::getHash() const {
     return hash;
 }
 
-time_t Block::getTimestamp() const {
+std::time_t Block::getTimestamp() const {
     return timestamp;
 }
 
@@ -57,20 +43,57 @@ const std::vector<Vote>& Block::getVotes() const {
     return votes;
 }
 
-// Display block information
+// Simple polynomial rolling hash function (placeholder for SHA-256)
+// This is deterministic and produces consistent results across platforms
+// TODO: Replace with SHA-256 for production use
+std::string Block::calculateHash() const {
+    // Concatenate all block data into a single string
+    std::ostringstream oss;
+    oss << index << previousHash << timestamp;
+    
+    // Include all votes in the hash calculation
+    for (const auto& vote : votes) {
+        oss << vote.toString();
+    }
+    
+    std::string data = oss.str();
+    
+    // Simple polynomial rolling hash (base 31)
+    unsigned long long hashValue = 0;
+    const unsigned long long prime = 31;
+    const unsigned long long mod = 1e9 + 9; // Large prime for modulo
+    
+    for (char c : data) {
+        hashValue = (hashValue * prime + static_cast<unsigned long long>(c)) % mod;
+    }
+    
+    // Convert to hex string representation
+    std::ostringstream hashStream;
+    hashStream << std::hex << std::setw(16) << std::setfill('0') << hashValue;
+    return hashStream.str();
+}
+
+// Pretty-print block information with all votes
 void Block::display() const {
-    std::cout << "\n========== BLOCK #" << index << " ==========\n";
-    std::cout << "Timestamp: " << ctime(&timestamp);
-    std::cout << "Previous Hash: " << previousHash << "\n";
-    std::cout << "Current Hash: " << hash << "\n";
-    std::cout << "Number of Votes: " << votes.size() << "\n";
+    std::cout << "\n========================================" << std::endl;
+    std::cout << "Block #" << index << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "Timestamp: " << timestamp << std::endl;
+    std::cout << "Previous Hash: " << previousHash << std::endl;
+    std::cout << "Hash: " << hash << std::endl;
+    std::cout << "Number of Votes: " << votes.size() << std::endl;
     
     if (!votes.empty()) {
-        std::cout << "Votes in this block:\n";
+        std::cout << "\nVotes in this block:" << std::endl;
         for (const auto& vote : votes) {
-            std::cout << "  ";
             vote.display();
         }
     }
-    std::cout << "================================\n";
+    std::cout << "========================================\n" << std::endl;
+}
+
+// Static factory method: Creates the genesis block (first block in chain)
+// Genesis block has index 0 and previous hash "0"
+Block Block::createGenesisBlock() {
+    return Block(0, "0");
 }

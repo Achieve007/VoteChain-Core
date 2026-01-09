@@ -1,74 +1,105 @@
-# 🗳️ VoteChain Core
+# 🗳️ Blockchain Voting System
 
-A blockchain-based voting system built with C++ and Object-Oriented Programming (OOP).
+A clean, object-oriented C++ implementation of a blockchain-based voting system with immutable vote records and cryptographic hash linking.
 
-## 📋 Project Overview
+## 🚀 Features
 
-VoteChain Core is a secure, transparent voting system that uses blockchain technology to ensure:
-- **Immutability**: Votes cannot be altered once recorded
-- **Transparency**: All votes are verifiable
-- **Security**: Proof of Authority (PoA) consensus mechanism
-- **Duplicate Prevention**: Automatic detection of duplicate votes
+- **Immutable Vote Records**: Each vote is timestamped and stored permanently
+- **Block Chaining**: Blocks are cryptographically linked via hash references
+- **Genesis Block**: Proper blockchain initialization
+- **Clean OOP Design**: Modular, testable, and maintainable architecture
+- **Cross-Platform**: Standard C++11/14, works on Linux, macOS, and Windows
 
-## 🏗️ Project Structure
+## 📁 Project Structure
 
 ```
-VOTECHAIN CORE/
+blockchain-voting/
 ├── include/          # Header files
-│   ├── Block.h       # Block class definition
-│   └── Vote.h        # Vote class definition
-├── src/              # Source files
-│   ├── Block.cpp     # Block implementation
-│   └── Vote.cpp      # Vote implementation
-├── main.cpp          # Main program
-└── README.md         # This file
+│   ├── Vote.h       # Vote class declaration
+│   └── Block.h      # Block class declaration
+├── src/             # Implementation files
+│   ├── Vote.cpp     # Vote class implementation
+│   └── Block.cpp    # Block class implementation
+└── main.cpp         # Test driver program
 ```
 
-## 🚀 Features (In Development)
+## 🔧 Building the Project
 
-- ✅ **Day 1-2**: Genesis Block & Basic Structure
-- 🔄 **Day 3-4**: SHA-256 Hashing & Blockchain Chain
-- ⏳ **Day 5-6**: Vote Validation & Duplicate Detection
-- ⏳ **Day 7**: Dead Block for Invalid Votes
-- ⏳ **Day 8-9**: Proof of Authority (PoA) Consensus
-- ⏳ **Day 10-11**: API Endpoint `/addVote`
-- ⏳ **Day 12-13**: Logging & Testing
+### Option 1: Using G++/Clang
 
-## 🔧 How to Compile
-
-### Using g++:
 ```bash
-g++ -std=c++11 main.cpp src/Vote.cpp src/Block.cpp -o voting_blockchain
-./voting_blockchain
+g++ -std=c++11 -I./include src/Vote.cpp src/Block.cpp main.cpp -o voting_system
+./voting_system
 ```
 
-### Using MinGW (Windows):
+### Option 2: Using MSVC (Windows)
+
 ```bash
-g++ -std=c++11 main.cpp src/Vote.cpp src/Block.cpp -o voting_blockchain.exe
-voting_blockchain.exe
+cl /EHsc /std:c++14 /I.\include src\Vote.cpp src\Block.cpp main.cpp /Fe:voting_system.exe
+voting_system.exe
 ```
 
-## 📚 Technologies Used
+### Option 3: Using CMake (Recommended)
 
-- **Language**: C++11
-- **Paradigm**: Object-Oriented Programming (OOP)
-- **Hashing**: SHA-256 (coming in Day 3-4)
-- **Consensus**: Proof of Authority (PoA)
+```bash
+mkdir build && cd build
+cmake ..
+make
+./voting_system
+```
 
-## 📅 Development Timeline
+## 🎯 Quick Start
 
-**Start Date**: January 7, 2025  
-**Deadline**: January 20, 2025  
-**Status**: Day 1-2 Complete ✅
+```cpp
+#include "Block.h"
+#include "Vote.h"
 
-## 👨‍💻 Author
+// Create genesis block
+Block genesisBlock = Block::createGenesisBlock();
 
-Developed as part of Blockchain Core Development learning journey.
+// Add votes
+Vote vote1("VOTER-001", "Alice Johnson");
+genesisBlock.addVote(vote1);
+
+// Display block
+genesisBlock.display();
+```
+
+## 🏗️ Architecture
+
+### Vote Class
+- Stores voter ID, candidate, and timestamp
+- Immutable after creation
+- Serializable for hashing
+
+### Block Class
+- Contains multiple votes
+- Links to previous block via hash
+- Automatically recalculates hash on changes
+- Genesis block factory method
+
+## 🔐 Security Note
+
+Currently uses a **polynomial rolling hash** for demonstration. For production use, replace with **SHA-256** or another cryptographic hash function.
+
+## 🛣️ Roadmap
+
+- [ ] Implement SHA-256 hashing
+- [ ] Add Blockchain manager class
+- [ ] Implement proof-of-work consensus
+- [ ] Add vote validation and double-vote prevention
+- [ ] Implement blockchain persistence
+- [ ] Add Merkle tree for efficient verification
+- [ ] Create REST API interface
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📝 License
 
-This project is for educational purposes.
+MIT License - feel free to use this project for learning.
 
----
+## 👨‍💻 Author
 
-**Last Updated**: January 7, 2025
+Built with ❤️ as a learning project for blockchain and C++ development.

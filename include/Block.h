@@ -1,3 +1,7 @@
+// include/Block.h
+// Represents a single block in the blockchain
+// Each block contains multiple votes, references previous block, and has its own hash
+
 #ifndef BLOCK_H
 #define BLOCK_H
 
@@ -9,31 +13,34 @@
 // Block class represents a container of votes in the blockchain
 class Block {
 private:
-    int index;                      // Position in blockchain
-    std::string previousHash;       // Hash of previous block (chain linkage)
-    time_t timestamp;               // When block was created
+    int index;                      // Position in the blockchain (0 for genesis)
+    std::string previousHash;       // Hash of the previous block (links the chain)
+    std::time_t timestamp;          // When this block was created
     std::vector<Vote> votes;        // Collection of votes in this block
-    std::string hash;               // This block's hash
-
-    // Private helper: calculate hash for this block
+    std::string hash;               // This block's hash (computed from all data)
+    
+    // Private helper: Calculates hash based on block contents
     std::string calculateHash() const;
 
 public:
-    // Constructor
+    // Constructor: Creates a new block
     Block(int idx, const std::string& prevHash);
     
-    // Add vote to block
+    // Add a vote to this block (before mining/sealing)
     void addVote(const Vote& vote);
     
-    // Getters
+    // Getters: Provide read-only access to block data
     int getIndex() const;
     std::string getPreviousHash() const;
     std::string getHash() const;
-    time_t getTimestamp() const;
+    std::time_t getTimestamp() const;
     const std::vector<Vote>& getVotes() const;
     
-    // Display block information
+    // Display: Pretty-prints block information
     void display() const;
+    
+    // Static factory method: Creates the first block in the chain
+    static Block createGenesisBlock();
 };
 
 #endif // BLOCK_H

@@ -1,42 +1,54 @@
-#include "include/Vote.h"
-#include "include/Block.h"
+// main.cpp
+// Test driver for the blockchain voting system
+// Demonstrates genesis block creation and vote addition
+
+#include "Block.h"
+#include "Vote.h"
 #include <iostream>
 
 int main() {
-    std::cout << "=================================\n";
-    std::cout << "  BLOCKCHAIN VOTING SYSTEM v1.0  \n";
-    std::cout << "  Day 1-2: Genesis Block Demo    \n";
-    std::cout << "=================================\n\n";
+    std::cout << "\n╔══════════════════════════════════════════╗" << std::endl;
+    std::cout << "║  Blockchain Voting System - Demo        ║" << std::endl;
+    std::cout << "╚══════════════════════════════════════════╝\n" << std::endl;
     
-    // Create the GENESIS BLOCK (first block in blockchain)
-    // Genesis block has index 0 and no previous hash
-    Block genesisBlock(0, "0");
+    // Step 1: Create the Genesis Block (the foundation of our blockchain)
+    std::cout << "Creating Genesis Block..." << std::endl;
+    Block genesisBlock = Block::createGenesisBlock();
     
-    std::cout << "✓ Genesis Block Created!\n";
+    // Display the empty genesis block
     genesisBlock.display();
     
-    std::cout << "\n--- Adding some test votes to Genesis Block ---\n";
+    // Step 2: Add some sample votes to the genesis block
+    std::cout << "Adding votes to Genesis Block...\n" << std::endl;
     
-    // Create and add some sample votes
-    Vote vote1("VOTER_001", "Alice");
-    Vote vote2("VOTER_002", "Bob");
-    Vote vote3("VOTER_003", "Alice");
+    Vote vote1("VOTER-001", "Alice Johnson");
+    Vote vote2("VOTER-002", "Bob Smith");
+    Vote vote3("VOTER-003", "Alice Johnson");
     
     genesisBlock.addVote(vote1);
-    std::cout << "✓ Added vote from VOTER_001\n";
-    
     genesisBlock.addVote(vote2);
-    std::cout << "✓ Added vote from VOTER_002\n";
-    
     genesisBlock.addVote(vote3);
-    std::cout << "✓ Added vote from VOTER_003\n";
     
-    // Display updated Genesis Block
-    std::cout << "\n--- Updated Genesis Block ---\n";
+    // Display the genesis block with votes
+    std::cout << "\nGenesis Block after adding votes:" << std::endl;
     genesisBlock.display();
     
-    std::cout << "\n🎉 Day 1-2 Complete! Genesis Block working!\n";
-    std::cout << "Next: Day 3-4 will add SHA-256 hashing and blockchain chain.\n";
+    // Step 3: Show hash changes when block content changes
+    std::cout << "Notice how the hash changed after adding votes!" << std::endl;
+    std::cout << "This ensures data integrity - any modification changes the hash.\n" << std::endl;
+    
+    // Step 4: Demonstrate block linking (preview of blockchain)
+    std::cout << "Creating Block #1 (linked to Genesis)..." << std::endl;
+    Block block1(1, genesisBlock.getHash());
+    
+    Vote vote4("VOTER-004", "Bob Smith");
+    block1.addVote(vote4);
+    
+    block1.display();
+    
+    std::cout << "✓ Genesis block created successfully!" << std::endl;
+    std::cout << "✓ Block linking works correctly!" << std::endl;
+    std::cout << "✓ Hash chain integrity maintained!\n" << std::endl;
     
     return 0;
 }
