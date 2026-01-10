@@ -1,17 +1,18 @@
 // src/Block.cpp
-// Implementation of Block class methods
+// Implementation of Block class methods with SHA-256 hashing
 
 #include "Block.h"
+#include "SHA256Helper.h"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
 
-// Constructor: Initialize block with index and previous hash, then calculate its hash
+// Constructor: Initialize block with index and previous hash, then calculate SHA-256
 Block::Block(int idx, const std::string& prevHash)
     : index(idx), previousHash(prevHash) {
     // Set creation timestamp
     timestamp = std::time(nullptr);
-    // Calculate and store this block's hash
+    // Calculate and store this block's SHA-256 hash
     hash = calculateHash();
 }
 
@@ -43,9 +44,8 @@ const std::vector<Vote>& Block::getVotes() const {
     return votes;
 }
 
-// Simple polynomial rolling hash function (placeholder for SHA-256)
-// This is deterministic and produces consistent results across platforms
-// TODO: Replace with SHA-256 for production use
+// SHA-256 hash calculation using all block data
+// Any change to block data will result in completely different hash
 std::string Block::calculateHash() const {
     // Concatenate all block data into a single string
     std::ostringstream oss;
@@ -58,19 +58,14 @@ std::string Block::calculateHash() const {
     
     std::string data = oss.str();
     
-    // Simple polynomial rolling hash (base 31)
-    unsigned long long hashValue = 0;
-    const unsigned long long prime = 31;
-    const unsigned long long mod = 1e9 + 9; // Large prime for modulo
-    
-    for (char c : data) {
-        hashValue = (hashValue * prime + static_cast<unsigned long long>(c)) % mod;
-    }
-    
-    // Convert to hex string representation
-    std::ostringstream hashStream;
-    hashStream << std::hex << std::setw(16) << std::setfill('0') << hashValue;
-    return hashStream.str();
+    // Compute and return SHA-256 hash
+    return SHA256Helper::hash(data);
+}
+
+// Validates that the block's stored hash matches its calculated hash
+// Returns false if block has been tampered with
+bool Block::isValid() const {
+    return hash == calculateHash();
 }
 
 // Pretty-print block information with all votes
@@ -79,9 +74,11 @@ void Block::display() const {
     std::cout << "Block #" << index << std::endl;
     std::cout << "========================================" << std::endl;
     std::cout << "Timestamp: " << timestamp << std::endl;
-    std::cout << "Previous Hash: " << previousHash << std::endl;
-    std::cout << "Hash: " << hash << std::endl;
+    std::cout << "Previous Hash: " << previousHash.substr(0, 16) << "..." << std::endl;
+    std::cout << "Block Hash: " << hash.substr(0, 16) << "..." << std::endl;
+    std::cout << "Full Hash: " << hash << std::endl;
     std::cout << "Number of Votes: " << votes.size() << std::endl;
+    std::cout << "Valid: " << (isValid() ? "✓ YES" : "✗ NO") << std::endl;
     
     if (!votes.empty()) {
         std::cout << "\nVotes in this block:" << std::endl;

@@ -23,7 +23,7 @@ private:
     std::string calculateHash() const;
 
 public:
-    // Constructor: Creates a new block
+    // Constructor: Creates a new block with SHA-256 hash
     Block(int idx, const std::string& prevHash);
     
     // Add a vote to this block (before mining/sealing)
@@ -35,6 +35,9 @@ public:
     std::string getHash() const;
     std::time_t getTimestamp() const;
     const std::vector<Vote>& getVotes() const;
+    
+    // Validation: Verifies block's hash is correct
+    bool isValid() const;
     
     // Display: Pretty-prints block information
     void display() const;
