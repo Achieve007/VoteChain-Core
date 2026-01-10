@@ -45,3 +45,37 @@ void Vote::display() const {
               << " -> " << candidate 
               << " (Time: " << timestamp << ")" << std::endl;
 }
+// Validates that vote has valid non-empty fields
+bool Vote::isValid() const {
+    return validateFields(voterTempID, candidate);
+}
+
+// Static validation method - checks vote fields before creating Vote object
+// Returns: true if both fields are non-empty and don't contain only whitespace
+bool Vote::validateFields(const std::string& voterId, const std::string& candidateName) {
+    
+// Check for empty strings
+if (voterId.empty() || candidateName.empty()) {
+return false;
+}
+
+ // Check for whitespace-only strings
+    bool voterIdValid = false;
+    bool candidateValid = false;
+    
+    for (char c : voterId) {
+        if (!std::isspace(static_cast<unsigned char>(c))) {
+            voterIdValid = true;
+            break;
+        }
+    }
+    
+    for (char c : candidateName) {
+        if (!std::isspace(static_cast<unsigned char>(c))) {
+            candidateValid = true;
+            break;
+        }
+    }
+    
+    return voterIdValid && candidateValid;
+}

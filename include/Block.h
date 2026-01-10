@@ -27,7 +27,11 @@ public:
     Block(int idx, const std::string& prevHash);
     
     // Add a vote to this block (before mining/sealing)
-    void addVote(const Vote& vote);
+    // Returns: true if vote was added, false if validation failed
+    bool addVote(const Vote& vote);
+
+    // Check if a voter has already voted in this block
+    bool hasVoter(const std::string& voterTempID) const;
     
     // Getters: Provide read-only access to block data
     int getIndex() const;

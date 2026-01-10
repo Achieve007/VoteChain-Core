@@ -1,29 +1,68 @@
-# Create .gitignore
 cat > .gitignore << 'EOF'
 # Compiled Object files
 *.o
 *.obj
+*.slo
+*.lo
+
+# Compiled Executables
 *.exe
 *.out
 *.app
+voting_system
+voting_system.exe
 
 # Build directories
 build/
 bin/
 obj/
+cmake-build-*/
 
-# IDE files
+# IDE and Editor files
 .vscode/
+.vs/
 .idea/
 *.swp
 *.swo
 *~
+*.sublime-*
+.vscode-test/
 
 # OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# Executable
-voting_system
-voting_system.exe
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# Backup files
+*~
+*.bak
+*.orig
+
+# Log files
+*.log
+
+# Dependencies
+*.d
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# Temporary files
+*.tmp
+*.temp
 EOF

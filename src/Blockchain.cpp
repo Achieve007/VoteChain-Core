@@ -33,6 +33,58 @@ void Blockchain::addBlock(Block newBlock) {
               << " added successfully to the blockchain" << std::endl;
 }
 
+// Validates and adds a vote to a pending block
+// Performs comprehensive validation including duplicate detection across entire chain
+// Time Complexity: O(n*m) where n = number of blocks, m = average votes per block
+bool Blockchain::addVoteToPendingBlock(Block& pendingBlock, const Vote& vote) {
+    // Step 1: Validate vote fields
+    if (!vote.isValid()) {
+        std::cerr << "✗ Vote rejected: Invalid vote data (empty fields)" << std::endl;
+        return false;
+    }
+    
+    // Step 2: Check for duplicate voter ID across entire blockchain
+    // This is the critical security check to prevent double-voting
+    if (hasVoterVoted(vote.getVoterTempID())) {
+        std::cerr << "✗ Vote rejected: Voter " << vote.getVoterTempID() 
+                  << " has already voted in the blockchain" << std::endl;
+        return false;
+    }
+    
+    // Step 3: Check if voter already voted in the pending block
+    if (pendingBlock.hasVoter(vote.getVoterTempID())) {
+        std::cerr << "✗ Vote rejected: Voter " << vote.getVoterTempID() 
+                  << " already voted in this pending block" << std::endl;
+        return false;
+    }
+    
+    // Step 4: Add vote to pending block
+    if (pendingBlock.addVote(vote)) {
+        std::cout << "✓ Vote accepted: " << vote.getVoterTempID() 
+                  << " -> " << vote.getCandidate() << std::endl;
+        return true;
+    }
+    
+    return false;
+}
+
+// Scans entire blockchain to check if a voter has already cast a vote
+// This prevents double-voting - a critical security feature
+// Time Complexity: O(n*m) where n = blocks in chain, m = avg votes per block
+// Trade-off: Slower validation for stronger security guarantee
+bool Blockchain::hasVoterVoted(const std::string& voterTempID) const {
+    // Scan every block in the chain
+    for (const auto& block : chain) {
+        // Scan every vote in each block
+        for (const auto& vote : block.getVotes()) {
+            if (vote.getVoterTempID() == voterTempID) {
+                return true;  // Voter found - they already voted!
+            }
+        }
+    }
+    return false;  // Voter not found - they haven't voted yet
+}
+
 // Validates the entire blockchain integrity
 // Checks: (1) Each block's hash is valid, (2) Each block links to previous correctly
 bool Blockchain::isChainValid() const {

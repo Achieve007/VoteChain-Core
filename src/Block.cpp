@@ -16,11 +16,37 @@ Block::Block(int idx, const std::string& prevHash)
     hash = calculateHash();
 }
 
-// Add a vote to this block's transaction list
-void Block::addVote(const Vote& vote) {
+// Add a vote to this block's transaction list with validation
+// Returns true if vote was added successfully, false otherwise
+bool Block::addVote(const Vote& vote) {
+    // Validate vote fields
+    if (!vote.isValid()) {
+        std::cerr << "✗ Vote rejected: Invalid vote fields" << std::endl;
+        return false;
+    }
+    
+    // Check for duplicate within this block
+    if (hasVoter(vote.getVoterTempID())) {
+        std::cerr << "✗ Vote rejected: Voter " << vote.getVoterTempID() 
+                  << " already voted in this block" << std::endl;
+        return false;
+    }
+
+    // Add vote and recalculate hash
     votes.push_back(vote);
-    // Recalculate hash since block content changed
     hash = calculateHash();
+    return true;
+}
+
+// Checks if a specific voter has already voted in this block
+// Time Complexity: O(n) where n = number of votes in this block
+bool Block::hasVoter(const std::string& voterTempID) const {
+    for (const auto& vote : votes) {
+        if (vote.getVoterTempID() == voterTempID) {
+            return true;
+        }
+    }
+    return false;
 }
 
 // Getter implementations

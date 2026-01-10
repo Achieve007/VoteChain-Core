@@ -22,7 +22,15 @@ public:
     // Adds a new block to the chain (automatically links to previous block)
     void addBlock(Block newBlock);
     
-    // Validates entire blockchain integrity
+    // Validates and adds a vote to a pending block
+    // Returns: true if vote was valid and added, false if rejected
+    bool addVoteToPendingBlock(Block& pendingBlock, const Vote& vote);
+    
+    // Checks if a voter has already voted in the entire blockchain
+    //Time Complexity: O(n*m) where n = number of blocks, m = average votes per block
+    bool hasVoterVoted(const std::string& voterTempID) const;
+    
+    // Validates the entire blockchain for integrity
     // Returns: true if all blocks are valid and properly linked
     bool isChainValid() const;
     

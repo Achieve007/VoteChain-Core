@@ -32,6 +32,12 @@ public:
     
     // Display: Pretty-prints vote information
     void display() const;
+
+    // Validation: Checks if vote has valid fields
+    bool isValid() const;
+
+    // Static validation: Validates vote fields before construction
+    static bool validateFields(const std::string& voterId, const std::string& candidateName);
 };
 
 #endif // VOTE_H
