@@ -1,6 +1,6 @@
 ## 📚 Documentation
 
-- **[README.md](README.md)**: This file - project overview and quick start
+- **[README1.md](README1.md)**: This file - project overview and quick start
 - **[ARCHITECTURE.md](ARCHITECTURE.md)**: Detailed system design, components, and patterns
 - **[docs/COMPLEXITY_ANALYSIS.md](docs/COMPLEXITY_ANALYSIS.md)**: Performance analysis and optimization strategies
 - **[docs/VALIDATION_GUIDE.md](docs/VALIDATION_GUIDE.md)**: Comprehensive validation testing guide
@@ -131,29 +131,30 @@ A production-ready, object-oriented C++ implementation of a blockchain-based vot
 ## 📁 Project Structure
 
 ```
-blockchain-voting/
-├── include/               # Header files
-│   ├── Vote.h            # Vote class with validation
-│   ├── Block.h           # Block class with vote management
-│   ├── Blockchain.h      # Blockchain manager with duplicate detection
-│   ├── SHA256Helper.h    # SHA-256 hashing utility
-│   └── VoteValidator.h   # ⭐ Centralized validation rules
-├── src/                  # Implementation files
-│   ├── Vote.cpp          # Vote validation logic
-│   ├── Block.cpp         # Block-level duplicate checks
-│   ├── Blockchain.cpp    # Cross-chain duplicate detection
-│   ├── SHA256Helper.cpp  # SHA-256 hashing implementation
-│   └── VoteValidator.cpp # ⭐ Validation rule enforcement
-├── docs/                 # ⭐ Documentation
-│   ├── COMPLEXITY_ANALYSIS.md  # Performance & optimization guide
-│   └── VALIDATION_GUIDE.md     # Testing & validation reference
-├── main.cpp              # Comprehensive test suite (6 test scenarios)
-├── Makefile              # ⭐ Build automation
-├── CMakeLists.txt        # CMake configuration
-├── ARCHITECTURE.md       # ⭐ System design documentation
-├── README.md             # This file
-└── LICENSE               # MIT License
 ```
+VoteChain-Core/
+├── include/
+│   ├── Vote.h
+│   ├── Block.h
+│   ├── Blockchain.h
+│   ├── SHA256Helper.h
+│   └── VoteValidator.h
+├── src/
+│   ├── Vote.cpp
+│   ├── Block.cpp
+│   ├── Blockchain.cpp
+│   ├── SHA256Helper.cpp
+│   ├── VoteValidator.cpp
+│   └── main.cpp
+├── docs/
+│   ├── COMPLEXITY_ANALYSIS.md
+│   └── VALIDATION_GUIDE.md
+├── Makefile
+├── CMakeLists.txt
+├── ARCHITECTURE.md
+├── README.md
+└── LICENSE
+\```
 
 ## 🔧 Building the Project
 
