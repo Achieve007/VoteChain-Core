@@ -83,11 +83,13 @@ public:
 - Detect duplicate voters across entire chain
 - Verify chain integrity
 - Provide statistics and analytics
+- Integrate with DeadBlock for rejected vote tracking
 
 **Key Design Decisions**:
 - Genesis block auto-created on initialization
 - Chain validation checks both hash integrity and linking
 - Duplicate detection scans entire history
+- DeadBlock integration for transparency
 
 **Validation Process**:
 1. Validate vote fields (non-empty, proper format)
@@ -105,6 +107,7 @@ public:
     bool hasVoterVoted(const std::string& voterTempID) const;
     bool isChainValid() const;
     int getTotalVotes() const;
+    const DeadBlock& getDeadBlock() const;
 };
 ```
 
@@ -161,6 +164,121 @@ public:
     static ValidationResult validateCandidate(const std::string& candidate);
     static ValidationResult validateVote(const std::string& voterID, 
                                          const std::string& candidate);
+};
+```
+
+---
+
+### 6. DeadBlock Class (`DeadBlock.h`, `DeadBlock.cpp`)
+
+**Purpose**: Audit trail for rejected votes with detailed metadata.
+
+**Responsibilities**:
+- Track invalid votes (format/field errors)
+- Track duplicate votes (double-voting attempts)
+- Categorize rejections with detailed reasons
+- Provide export capabilities (CSV, JSON)
+- Enable transparency and debugging
+
+**Rejection Categories**:
+- Empty voter ID/candidate
+- Whitespace-only fields
+- Length violations (too short/long)
+- Invalid characters
+- Cross-chain duplicates
+- Same-block duplicates
+
+**Public Interface**:
+```cpp
+class DeadBlock {
+public:
+    DeadBlock();
+    void logInvalidVote(const std::string& voterTempID,
+                       const std::string& candidate,
+                       RejectionReason reason,
+                       const std::string& message = "");
+    void logDuplicateVote(const std::string& voterTempID,
+                         const std::string& candidate,
+                         RejectionReason reason,
+                         const std::string& message = "");
+    std::string toCSV() const;
+    std::string toJSON() const;
+};
+```
+
+---
+
+### 7. Validator Class (`Validator.h`, `Validator.cpp`) ⭐ NEW
+
+**Purpose**: Represents an authorized validator in Proof of Authority network.
+
+**Responsibilities**:
+- Store validator identity and credentials
+- Generate digital signatures for blocks
+- Track validation statistics
+- Support active/inactive status
+
+**Key Design Decisions**:
+- Simulated digital signatures using SHA-256 (upgradeable to ECDSA)
+- Public key for signature verification
+- Statistics tracking for accountability
+
+**Public Interface**:
+```cpp
+class Validator {
+public:
+    Validator(const std::string& id, const std::string& name, 
+              const std::string& publicKey);
+    std::string signBlock(const std::string& blockHash) const;
+    static bool verifySignature(const std::string& blockHash,
+                               const std::string& signature,
+                               const std::string& publicKey);
+    void setActive(bool active);
+    void incrementBlocksValidated();
+};
+```
+
+---
+
+### 8. ConsensusPoA Class (`ConsensusPoA.h`, `ConsensusPoA.cpp`) ⭐ NEW
+
+**Purpose**: Proof of Authority consensus engine for multi-signature block approval.
+
+**Responsibilities**:
+- Manage authorized validators (registration, removal)
+- Accept block submissions for consensus
+- Collect validator signatures
+- Enforce minimum approval threshold (3/4)
+- Finalize approved blocks
+- Reject blocks with insufficient consensus
+- Maintain audit trail of all approvals
+
+**Key Design Decisions**:
+- 4 validators with 3-approval threshold (75% consensus)
+- Multi-signature approval prevents single point of failure
+- Pending blocks await consensus before finalization
+- Complete transparency with audit logs
+
+**Consensus Workflow**:
+1. Block submitted for consensus
+2. Validators independently review and sign
+3. Signatures collected (requires 3/4)
+4. Block finalized if threshold reached
+5. Block rejected if insufficient signatures
+
+**Public Interface**:
+```cpp
+class ConsensusPoA {
+public:
+    ConsensusPoA(int minApprovals = 3);
+    void registerValidator(const Validator& validator);
+    bool submitBlockForConsensus(const Block& block);
+    ConsensusResult addValidatorSignature(const std::string& blockHash,
+                                         const std::string& validatorID);
+    bool finalizeBlock(const std::string& blockHash);
+    bool hasReachedConsensus(const std::string& blockHash) const;
+    int getTotalBlocksApproved() const;
+    int getTotalBlocksRejected() const;
 };
 ```
 
