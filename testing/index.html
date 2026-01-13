@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Voting System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c1e3e 0%, #1a3a6c 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 2px solid #2a4a7c;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: #4dabf7;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(to right, #4dabf7, #74c0fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a5d8ff;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .panel {
+            background: rgba(18, 38, 71, 0.85);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a4a7c;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #2a4a7c;
+        }
+        
+        .panel-icon {
+            font-size: 1.8rem;
+            color: #4dabf7;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            color: #c5e3ff;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a5d8ff;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            background: rgba(10, 25, 47, 0.8);
+            border: 1px solid #3a5a8c;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4dabf7;
+            box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #228be6, #4dabf7);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(to right, #1c7ed6, #339af0);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background: #5c7c9c;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, #495057, #6c757d);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(to right, #343a40, #495057);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(to right, #e67700, #f76707);
+        }
+        
+        .btn-warning:hover {
+            background: linear-gradient(to right, #d9480f, #e8590c);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(10, 25, 47, 0.7);
+            padding: 18px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #2a4a7c;
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #4dabf7;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.95rem;
+            color: #a5d8ff;
+        }
+        
+        .response-container {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(10, 25, 47, 0.7);
+            border-radius: 10px;
+            border: 1px solid #2a4a7c;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .response-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #a5d8ff;
+        }
+        
+        pre {
+            background: rgba(5, 15, 30, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            color: #e0e0e0;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border: 1px solid #2a4a7c;
+        }
+        
+        .success {
+            color: #51cf66;
+        }
+        
+        .error {
+            color: #ff6b6b;
+        }
+        
+        .warning {
+            color: #ffd43b;
+        }
+        
+        .info {
+            color: #4dabf7;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #2a4a7c;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: #a5d8ff;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        .tab:hover {
+            color: #4dabf7;
+        }
+        
+        .tab.active {
+            color: #4dabf7;
+            font-weight: 600;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #4dabf7;
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .blockchain-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .block-card {
+            background: rgba(10, 25, 47, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #2a4a8c;
+            transition: transform 0.3s;
+        }
+        
+        .block-card:hover {
+            transform: translateY(-5px);
+            border-color: #4dabf7;
+        }
+        
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2a4a7c;
+        }
+        
+        .block-index {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4dabf7;
+        }
+        
+        .block-hash {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #a5d8ff;
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+        
+        .block-votes {
+            font-size: 0.9rem;
+            color: #74c0fc;
+        }
+        
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(10, 25, 47, 0.7);
+            border-radius: 50px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            border: 1px solid #2a4a7c;
+            z-index: 100;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff6b6b;
+        }
+        
+        .status-indicator.connected {
+            background: #51cf66;
+            box-shadow: 0 0 8px #51cf66;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(81, 207, 102, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(81, 207, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(81, 207, 102, 0); }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #2a4a7c;
+            color: #a5d8ff;
+            font-size: 0.9rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons .btn {
+            width: auto;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .validation-result {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .validation-valid {
+            background: rgba(81, 207, 102, 0.15);
+            border: 1px solid #51cf66;
+            color: #51cf66;
+        }
+        
+        .validation-invalid {
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4dabf7;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: rgba(18, 38, 71, 0.95);
+            border-left: 5px solid #4dabf7;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.5s;
+            max-width: 400px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-left-color: #51cf66;
+        }
+        
+        .notification.error {
+            border-left-color: #ff6b6b;
+        }
+        
+        .notification.warning {
+            border-left-color: #ffd43b;
+        }
+        
+        .server-setup {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .server-setup h3 {
+            color: #ffc107;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .api-url-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .api-url-input input {
+            flex: 1;
+        }
+        
+        .demo-data {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid #28a745;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .demo-data h4 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-vote-yea logo-icon"></i>
+                <h1>Blockchain Voting System</h1>
+            </div>
+            <p class="subtitle">Secure, transparent, and immutable voting powered by blockchain technology. Submit votes, view statistics, and monitor the blockchain in real-time.</p>
+        </header>
+        
+        <div class="main-content">
+            <!-- Left Panel: Submit Vote -->
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-pencil-alt panel-icon"></i>
+                    <h2>Submit Vote</h2>
+                </div>
+                
+                <div class="server-setup" id="serverWarning">
+                    <h3><i class="fas fa-exclamation-triangle"></i> API Server Not Connected</h3>
+                    <p>To use this voting system, you need to run the C++ API server:</p>
+                    <div class="code-block">
+                        <code>./api_server</code>
+                    </div>
+                    <p>Or connect to an existing server:</p>
+                    <div class="api-url-input">
+                        <input type="text" id="customApiUrl" placeholder="http://localhost:8080" value="http://localhost:8080">
+                        <button id="connectToApi" class="btn btn-warning">
+                            <i class="fas fa-plug"></i> Connect
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="voterId"><i class="fas fa-id-card"></i> Voter Temporary ID</label>
+                    <input type="text" id="voterId" placeholder="Enter your temporary voter ID (e.g., VOTER-001)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="candidate"><i class="fas fa-user-tie"></i> Candidate Selection</label>
+                    <select id="candidate">
+                        <option value="">-- Select a Candidate --</option>
+                        <option value="Alice">Alice</option>
+                        <option value="Bob">Bob</option>
+                        <option value="Charlie">Charlie</option>
+                        <option value="Diana">Diana</option>
+                        <option value="Edward">Edward</option>
+                    </select>
+                </div>
+                
+                <div class="demo-data">
+                    <h4><i class="fas fa-flask"></i> Quick Test Data</h4>
+                    <p>Try these test votes to see how the system works:</p>
+                    <div class="demo-buttons">
+                        <button class="btn btn-secondary" onclick="fillTestData('VOTER-001', 'Alice')">VOTER-001 → Alice</button>
+                        <button class="btn btn-secondary" onclick="fillTestData('VOTER-002', 'Bob')">VOTER-002 → Bob</button>
+                        <button class="btn btn-secondary" onclick="fillTestData('VOTER-003', 'Charlie')">VOTER-003 → Charlie</button>
+                    </div>
+                </div>
+                
+                <button id="submitVote" class="btn" disabled>
+                    <i class="fas fa-paper-plane"></i> Submit Vote to Blockchain
+                </button>
+                
+                <div class="response-container">
+                    <div class="response-title">
+                        <i class="fas fa-server"></i>
+                        <h3>API Response</h3>
+                    </div>
+                    <pre id="voteResponse">Connect to API server to submit votes...</pre>
+                </div>
+            </div>
+            
+            <!-- Right Panel: Statistics & Monitoring -->
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-chart-bar panel-icon"></i>
+                    <h2>Statistics & Monitoring</h2>
+                </div>
+                
+                <div class="tabs">
+                    <button class="tab active" data-tab="stats">Statistics</button>
+                    <button class="tab" data-tab="blocks">Blocks</button>
+                    <button class="tab" data-tab="validation">Validation</button>
+                    <button class="tab" data-tab="rejected">Rejected</button>
+                </div>
+                
+                <!-- Stats Tab -->
+                <div id="stats-tab" class="tab-content active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalVotes">0</div>
+                            <div class="stat-label">Total Votes Received</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="acceptedVotes">0</div>
+                            <div class="stat-label">Votes Accepted</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="rejectedVotes">0</div>
+                            <div class="stat-label">Votes Rejected</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalBlocks">1</div>
+                            <div class="stat-label">Total Blocks</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="currentBlockVotes">0</div>
+                            <div class="stat-label">Votes in Current Block</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="chainValid">No</div>
+                            <div class="stat-label">Chain Valid</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="refreshStats" class="btn btn-secondary" disabled>
+                            <i class="fas fa-sync-alt"></i> Refresh Statistics
+                        </button>
+                        <button id="testMode" class="btn btn-warning">
+                            <i class="fas fa-flask"></i> Enable Test Mode
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Blocks Tab -->
+                <div id="blocks-tab" class="tab-content">
+                    <p>View the blockchain structure and individual blocks.</p>
+                    <div class="action-buttons">
+                        <button id="loadBlocks" class="btn" disabled>
+                            <i class="fas fa-cube"></i> Load All Blocks
+                        </button>
+                        <button id="loadBlock" class="btn btn-secondary" disabled>
+                            <i class="fas fa-search"></i> Load Block
+                        </button>
+                        <input type="number" id="blockIndex" placeholder="Block Index" min="0" value="0" style="width: 100px;">
+                    </div>
+                    
+                    <div id="blocksContainer" class="blockchain-container">
+                        <p class="info">Connect to API server to view blocks</p>
+                    </div>
+                </div>
+                
+                <!-- Validation Tab -->
+                <div id="validation-tab" class="tab-content">
+                    <p>Validate the integrity of the entire blockchain to ensure no tampering has occurred.</p>
+                    <button id="validateChain" class="btn" disabled>
+                        <i class="fas fa-check-circle"></i> Validate Blockchain
+                    </button>
+                    
+                    <div id="validationResult" class="validation-result" style="display: none;">
+                        <!-- Validation result will appear here -->
+                    </div>
+                </div>
+                
+                <!-- Rejected Votes Tab -->
+                <div id="rejected-tab" class="tab-content">
+                    <p>View votes that were rejected due to duplication or invalid data.</p>
+                    <button id="loadRejected" class="btn" disabled>
+                        <i class="fas fa-skull-crossbones"></i> Load Rejected Votes
+                    </button>
+                    
+                    <div class="response-container" style="margin-top: 20px;">
+                        <div class="response-title">
+                            <i class="fas fa-ban"></i>
+                            <h3>Rejected Votes</h3>
+                        </div>
+                        <pre id="rejectedResponse">Connect to API server to view rejected votes...</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Blockchain Voting System &copy; 2023 | API Server: <span id="apiServerUrl">Not connected</span></p>
+            <p>This is a demonstration system for secure voting using blockchain technology.</p>
+        </footer>
+        
+        <!-- Connection Status -->
+        <div class="connection-status">
+            <div class="status-indicator" id="connectionIndicator"></div>
+            <span id="connectionText">Not connected</span>
+        </div>
+        
+        <!-- Notification -->
+        <div class="notification" id="notification">
+            <div id="notificationMessage">Notification message</div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        let API_BASE_URL = 'http://localhost:8080';
+        let isConnected = false;
+        let testMode = false;
+        let testData = {
+            totalVotesReceived: 0,
+            totalVotesAccepted: 0,
+            totalVotesRejected: 0,
+            totalBlocks: 1,
+            votesInCurrentBlock: 0,
+            chainValid: true,
+            blocks: []
+        };
+        
+        // DOM Elements
+        const connectionIndicator = document.getElementById('connectionIndicator');
+        const connectionText = document.getElementById('connectionText');
+        const notification = document.getElementById('notification');
+        const notificationMessage = document.getElementById('notificationMessage');
+        const serverWarning = document.getElementById('serverWarning');
+        const apiServerUrlSpan = document.getElementById('apiServerUrl');
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if API server is running
+            checkAPIConnection();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Setup tabs
+            setupTabs();
+        });
+        
+        // Check if API server is running
+        async function checkAPIConnection() {
+            try {
+                showNotification("Testing connection to API server...", "info");
+                const response = await fetch(API_BASE_URL + '/', { 
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    setConnectionStatus(true, "Connected to API Server");
+                    showNotification("Connected to Blockchain Voting API", "success");
+                    serverWarning.style.display = 'none';
+                    enableAllControls(true);
+                    apiServerUrlSpan.textContent = API_BASE_URL;
+                    
+                    // Load initial stats
+                    loadStatistics();
+                } else {
+                    setConnectionStatus(false, "API Server Error");
+                    showNotification("API server returned an error", "error");
+                    enableAllControls(false);
+                    apiServerUrlSpan.textContent = "Not connected";
+                }
+            } catch (error) {
+                setConnectionStatus(false, "Cannot connect to API Server");
+                showNotification("Cannot connect to API server. Run './api_server' in terminal or enable test mode.", "error");
+                enableAllControls(false);
+                apiServerUrlSpan.textContent = "Not connected";
+                
+                // Show server setup instructions
+                serverWarning.style.display = 'block';
+            }
+        }
+        
+        // Set connection status UI
+        function setConnectionStatus(connected, message) {
+            isConnected = connected;
+            connectionIndicator.classList.toggle('connected', connected);
+            connectionText.textContent = message;
+            
+            // Update submit button state
+            document.getElementById('submitVote').disabled = !connected && !testMode;
+        }
+        
+        // Enable/disable all controls
+        function enableAllControls(enabled) {
+            const controls = [
+                'submitVote', 'refreshStats', 'loadBlocks', 'loadBlock',
+                'validateChain', 'loadRejected'
+            ];
+            
+            controls.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.disabled = !enabled && !testMode;
+            });
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Submit vote button
+            document.getElementById('submitVote').addEventListener('click', submitVote);
+            
+            // Refresh statistics button
+            document.getElementById('refreshStats').addEventListener('click', loadStatistics);
+            
+            // Connect to API button
+            document.getElementById('connectToApi').addEventListener('click', connectToCustomApi);
+            
+            // Load blocks buttons
+            document.getElementById('loadBlocks').addEventListener('click', loadAllBlocks);
+            document.getElementById('loadBlock').addEventListener('click', loadSpecificBlock);
+            
+            // Validate chain button
+            document.getElementById('validateChain').addEventListener('click', validateChain);
+            
+            // Load rejected votes button
+            document.getElementById('loadRejected').addEventListener('click', loadRejectedVotes);
+            
+            // Test mode button
+            document.getElementById('testMode').addEventListener('click', toggleTestMode);
+            
+            // Allow Enter key to submit vote
+            document.getElementById('voterId').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') submitVote();
+            });
+            
+            document.getElementById('candidate').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') submitVote();
+            });
+            
+            document.getElementById('customApiUrl').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') connectToCustomApi();
+            });
+        }
+        
+        // Connect to custom API URL
+        function connectToCustomApi() {
+            const customUrl = document.getElementById('customApiUrl').value.trim();
+            if (customUrl) {
+                API_BASE_URL = customUrl;
+                checkAPIConnection();
+            }
+        }
+        
+        // Setup tab functionality
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show active content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-tab`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+        }
+        
+        // Toggle test mode
+        function toggleTestMode() {
+            testMode = !testMode;
+            const testModeBtn = document.getElementById('testMode');
+            
+            if (testMode) {
+                testModeBtn.innerHTML = '<i class="fas fa-flask"></i> Disable Test Mode';
+                testModeBtn.classList.remove('btn-warning');
+                testModeBtn.classList.add('btn-secondary');
+                
+                // Enable all controls
+                enableAllControls(true);
+                setConnectionStatus(false, "Test Mode Active");
+                showNotification("Test mode enabled. Using simulated data.", "warning");
+                
+                // Load test statistics
+                loadTestStatistics();
+            } else {
+                testModeBtn.innerHTML = '<i class="fas fa-flask"></i> Enable Test Mode';
+                testModeBtn.classList.remove('btn-secondary');
+                testModeBtn.classList.add('btn-warning');
+                
+                // Re-check connection
+                checkAPIConnection();
+            }
+        }
+        
+        // Fill test data into form
+        function fillTestData(voterId, candidate) {
+            document.getElementById('voterId').value = voterId;
+            document.getElementById('candidate').value = candidate;
+        }
+        
+        // Submit a vote
+        async function submitVote() {
+            if (!isConnected && !testMode) {
+                showNotification("Cannot submit vote: Not connected to API server", "error");
+                return;
+            }
+            
+            const voterId = document.getElementById('voterId').value.trim();
+            const candidate = document.getElementById('candidate').value;
+            const submitBtn = document.getElementById('submitVote');
+            const responseElement = document.getElementById('voteResponse');
+            
+            // Validation
+            if (!voterId) {
+                showNotification("Please enter a voter ID", "warning");
+                return;
+            }
+            
+            if (!candidate) {
+                showNotification("Please select a candidate", "warning");
+                return;
+            }
+            
+            // Prepare vote data
+            const voteData = {
+                voterTempID: voterId,
+                candidate: candidate
+            };
+            
+            // Show loading state
+            submitBtn.innerHTML = '<div class="loading"></div> Submitting Vote...';
+            submitBtn.disabled = true;
+            
+            try {
+                let result;
+                
+                if (testMode) {
+                    // Simulate API response in test mode
+                    result = simulateVoteResponse(voterId, candidate);
+                } else {
+                    // Send vote to real API
+                    const response = await fetch(API_BASE_URL + '/addVote', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(voteData)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    result = await response.json();
+                }
+                
+                // Display response
+                responseElement.textContent = JSON.stringify(result, null, 2);
+                
+                // Color code based on status
+                if (result.status === 'success') {
+                    responseElement.className = 'success';
+                    showNotification(`Vote submitted successfully! Added to block ${result.data?.blockIndex || 1}`, "success");
+                    
+                    // Clear form
+                    document.getElementById('voterId').value = '';
+                    document.getElementById('candidate').value = '';
+                } else if (result.status === 'duplicate') {
+                    responseElement.className = 'error';
+                    showNotification(`Vote rejected: Duplicate voter ID`, "error");
+                } else if (result.status === 'invalid') {
+                    responseElement.className = 'warning';
+                    showNotification(`Vote rejected: Invalid data`, "warning");
+                } else {
+                    responseElement.className = 'error';
+                    showNotification(`Error: ${result.message}`, "error");
+                }
+                
+                // Refresh statistics
+                if (testMode) {
+                    loadTestStatistics();
+                } else {
+                    loadStatistics();
+                }
+                
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+                responseElement.className = 'error';
+                showNotification(`Network error: ${error.message}`, "error");
+            } finally {
+                // Restore button
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Vote to Blockchain';
+                submitBtn.disabled = !isConnected && !testMode;
+            }
+        }
+        
+        // Simulate vote response for test mode
+        function simulateVoteResponse(voterId, candidate) {
+            // Simulate some randomness
+            const isDuplicate = Math.random() > 0.8;
+            const isValid = Math.random() > 0.1;
+            
+            if (isDuplicate) {
+                return {
+                    status: 'duplicate',
+                    message: 'Vote rejected: Voter has already voted',
+                    data: {
+                        voterTempID: voterId,
+                        candidate: candidate,
+                        rejectionReason: 'Duplicate voter ID detected in blockchain'
+                    },
+                    meta: {
+                        processingTime: 12.5,
+                        serverTimestamp: Math.floor(Date.now() / 1000)
+                    }
+                };
+            } else if (!isValid) {
+                return {
+                    status: 'invalid',
+                    message: 'Vote rejected: Invalid vote data',
+                    data: {
+                        voterTempID: voterId,
+                        candidate: candidate,
+                        rejectionReason: 'Invalid voter ID format'
+                    },
+                    meta: {
+                        processingTime: 8.2,
+                        serverTimestamp: Math.floor(Date.now() / 1000)
+                    }
+                };
+            } else {
+                // Success
+                testData.totalVotesReceived++;
+                testData.totalVotesAccepted++;
+                testData.votesInCurrentBlock++;
+                
+                if (testData.votesInCurrentBlock >= 5) { // Simulate block finalization
+                    testData.totalBlocks++;
+                    testData.votesInCurrentBlock = 0;
+                }
+                
+                return {
+                    status: 'success',
+                    message: 'Vote successfully recorded',
+                    data: {
+                        voterTempID: voterId,
+                        candidate: candidate,
+                        blockIndex: testData.totalBlocks,
+                        blockHash: `test_hash_${Date.now()}`,
+                        timestamp: Math.floor(Date.now() / 1000)
+                    },
+                    meta: {
+                        processingTime: 15.3,
+                        serverTimestamp: Math.floor(Date.now() / 1000)
+                    }
+                };
+            }
+        }
+        
+        // Load statistics
+        async function loadStatistics() {
+            if (!isConnected && !testMode) return;
+            
+            const refreshBtn = document.getElementById('refreshStats');
+            
+            // Show loading state
+            if (refreshBtn) {
+                refreshBtn.innerHTML = '<div class="loading"></div> Refreshing...';
+                refreshBtn.disabled = true;
+            }
+            
+            try {
+                let stats;
+                
+                if (testMode) {
+                    stats = testData;
+                } else {
+                    const response = await fetch(API_BASE_URL + '/stats');
+                    stats = await response.json();
+                }
+                
+                // Update UI
+                document.getElementById('totalVotes').textContent = stats.totalVotesReceived || 0;
+                document.getElementById('acceptedVotes').textContent = stats.totalVotesAccepted || 0;
+                document.getElementById('rejectedVotes').textContent = stats.totalVotesRejected || 0;
+                document.getElementById('totalBlocks').textContent = stats.totalBlocks || 1;
+                document.getElementById('currentBlockVotes').textContent = stats.votesInCurrentBlock || 0;
+                document.getElementById('chainValid').textContent = stats.chainValid ? 'Yes' : 'No';
+                document.getElementById('chainValid').className = stats.chainValid ? 'success' : 'error';
+                
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+                showNotification("Error loading statistics", "error");
+            } finally {
+                // Restore button
+                if (refreshBtn) {
+                    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Statistics';
+                    refreshBtn.disabled = false;
+                }
+            }
+        }
+        
+        // Load test statistics
+        function loadTestStatistics() {
+            // Update UI with test data
+            document.getElementById('totalVotes').textContent = testData.totalVotesReceived;
+            document.getElementById('acceptedVotes').textContent = testData.totalVotesAccepted;
+            document.getElementById('rejectedVotes').textContent = testData.totalVotesRejected;
+            document.getElementById('totalBlocks').textContent = testData.totalBlocks;
+            document.getElementById('currentBlockVotes').textContent = testData.votesInCurrentBlock;
+            document.getElementById('chainValid').textContent = testData.chainValid ? 'Yes' : 'No';
+            document.getElementById('chainValid').className = testData.chainValid ? 'success' : 'error';
+        }
+        
+        // Load all blocks
+        async function loadAllBlocks() {
+            if (!isConnected && !testMode) return;
+            
+            const loadBtn = document.getElementById('loadBlocks');
+            const blocksContainer = document.getElementById('blocksContainer');
+            
+            // Show loading state
+            loadBtn.innerHTML = '<div class="loading"></div> Loading...';
+            loadBtn.disabled = true;
+            blocksContainer.innerHTML = '<p>Loading blocks...</p>';
+            
+            try {
+                let blocks = [];
+                
+                if (testMode) {
+                    // Generate test blocks
+                    for (let i = 0; i < testData.totalBlocks; i++) {
+                        blocks.push({
+                            status: 'success',
+                            blockIndex: i,
+                            blockHash: `test_block_hash_${i}_${Date.now().toString(16)}`,
+                            previousHash: i === 0 ? '0' : `test_block_hash_${i-1}_${Date.now().toString(16)}`,
+                            timestamp: Math.floor(Date.now() / 1000) - (testData.totalBlocks - i) * 1000,
+                            voteCount: i === testData.totalBlocks - 1 ? testData.votesInCurrentBlock : 5,
+                            votes: []
+                        });
+                    }
+                } else {
+                    // First get stats to know how many blocks
+                    const statsResponse = await fetch(API_BASE_URL + '/stats');
+                    const stats = await statsResponse.json();
+                    const totalBlocks = stats.totalBlocks || 1;
+                    
+                    // Load each block
+                    for (let i = 0; i < totalBlocks; i++) {
+                        try {
+                            const blockResponse = await fetch(API_BASE_URL + '/block/' + i);
+                            if (blockResponse.ok) {
+                                const blockData = await blockResponse.json();
+                                blocks.push(blockData);
+                            }
+                        } catch (error) {
+                            console.error(`Error loading block ${i}:`, error);
+                        }
+                    }
+                }
+                
+                renderBlocks(blocks);
+                
+                if (testMode) {
+                    showNotification(`Loaded ${blocks.length} test blocks`, "success");
+                } else {
+                    showNotification(`Loaded ${blocks.length} blocks`, "success");
+                }
+                
+            } catch (error) {
+                console.error('Error loading blocks:', error);
+                blocksContainer.innerHTML = '<p class="error">Error loading blocks</p>';
+                showNotification("Error loading blocks", "error");
+            } finally {
+                // Restore button
+                loadBtn.innerHTML = '<i class="fas fa-cube"></i> Load All Blocks';
+                loadBtn.disabled = false;
+            }
+        }
+        
+        // Load specific block
+        async function loadSpecificBlock() {
+            if (!isConnected && !testMode) return;
+            
+            const blockIndexInput = document.getElementById('blockIndex');
+            const blockIndex = parseInt(blockIndexInput.value);
+            const loadBtn = document.getElementById('loadBlock');
+            const blocksContainer = document.getElementById('blocksContainer');
+            
+            if (isNaN(blockIndex) || blockIndex < 0) {
+                showNotification("Please enter a valid block index", "warning");
+                return;
+            }
+            
+            // Show loading state
+            loadBtn.innerHTML = '<div class="loading"></div> Loading...';
+            loadBtn.disabled = true;
+            blocksContainer.innerHTML = '<p>Loading block...</p>';
+            
+            try {
+                let blockData;
+                
+                if (testMode) {
+                    // Generate test block
+                    blockData = {
+                        status: 'success',
+                        blockIndex: blockIndex,
+                        blockHash: `test_block_hash_${blockIndex}_${Date.now().toString(16)}`,
+                        previousHash: blockIndex === 0 ? '0' : `test_block_hash_${blockIndex-1}_${Date.now().toString(16)}`,
+                        timestamp: Math.floor(Date.now() / 1000) - blockIndex * 1000,
+                        voteCount: blockIndex === testData.totalBlocks - 1 ? testData.votesInCurrentBlock : 5
+                    };
+                } else {
+                    const response = await fetch(API_BASE_URL + '/block/' + blockIndex);
+                    
+                    if (response.ok) {
+                        blockData = await response.json();
+                    } else {
+                        const error = await response.json();
+                        blocksContainer.innerHTML = `<p class="error">Error: ${error.message || 'Block not found'}</p>`;
+                        showNotification(`Error loading block ${blockIndex}`, "error");
+                        return;
+                    }
+                }
+                
+                renderBlocks([blockData]);
+                showNotification(`Loaded block ${blockIndex}`, "success");
+                
+            } catch (error) {
+                console.error('Error loading block:', error);
+                blocksContainer.innerHTML = '<p class="error">Error loading block</p>';
+                showNotification("Error loading block", "error");
+            } finally {
+                // Restore button
+                loadBtn.innerHTML = '<i class="fas fa-search"></i> Load Specific Block';
+                loadBtn.disabled = false;
+            }
+        }
+        
+        // Render blocks to the UI
+        function renderBlocks(blocks) {
+            const blocksContainer = document.getElementById('blocksContainer');
+            
+            if (blocks.length === 0) {
+                blocksContainer.innerHTML = '<p>No blocks found</p>';
+                return;
+            }
+            
+            blocksContainer.innerHTML = '';
+            
+            blocks.forEach(block => {
+                if (block.status === 'error') return;
+                
+                const blockCard = document.createElement('div');
+                blockCard.className = 'block-card';
+                
+                // Format hash for display
+                const shortHash = block.blockHash ? 
+                    block.blockHash.substring(0, 16) + '...' + block.blockHash.substring(block.blockHash.length - 8) : 
+                    'N/A';
+                
+                // Format previous hash
+                const prevHash = block.previousHash ? 
+                    (block.previousHash.length > 24 ? 
+                     block.previousHash.substring(0, 16) + '...' + block.previousHash.substring(block.previousHash.length - 8) : 
+                     block.previousHash) : 
+                    'Genesis';
+                
+                // Format timestamp
+                const timestamp = block.timestamp ? 
+                    new Date(block.timestamp * 1000).toLocaleString() : 
+                    'Unknown';
+                
+                blockCard.innerHTML = `
+                    <div class="block-header">
+                        <div class="block-index">Block #${block.blockIndex}</div>
+                        <div class="block-votes">${block.voteCount || 0} votes</div>
+                    </div>
+                    <div class="block-hash">
+                        <strong>Hash:</strong> ${shortHash}
+                    </div>
+                    <div class="block-hash">
+                        <strong>Previous Hash:</strong> ${prevHash}
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.9rem; color: #a5d8ff;">
+                        <strong>Timestamp:</strong> ${timestamp}
+                    </div>
+                `;
+                
+                blocksContainer.appendChild(blockCard);
+            });
+        }
+        
+        // Validate blockchain
+        async function validateChain() {
+            if (!isConnected && !testMode) return;
+            
+            const validateBtn = document.getElementById('validateChain');
+            const validationResult = document.getElementById('validationResult');
+            
+            // Show loading state
+            validateBtn.innerHTML = '<div class="loading"></div> Validating...';
+            validateBtn.disabled = true;
+            validationResult.style.display = 'none';
+            
+            try {
+                let result;
+                
+                if (testMode) {
+                    // Simulate validation
+                    result = {
+                        status: 'success',
+                        chainValid: testData.chainValid,
+                        message: testData.chainValid ? 
+                            'Blockchain integrity verified' : 
+                            'Blockchain integrity compromised',
+                        totalBlocks: testData.totalBlocks,
+                        totalVotes: testData.totalVotesAccepted
+                    };
+                } else {
+                    const response = await fetch(API_BASE_URL + '/validate');
+                    result = await response.json();
+                }
+                
+                // Display result
+                validationResult.style.display = 'block';
+                
+                if (result.chainValid) {
+                    validationResult.className = 'validation-result validation-valid';
+                    validationResult.innerHTML = `
+                        <i class="fas fa-check-circle" style="font-size: 1.5rem; margin-bottom: 10px;"></i>
+                        <h3>Blockchain Integrity Verified</h3>
+                        <p>All ${result.totalBlocks} blocks are valid with ${result.totalVotes} total votes.</p>
+                    `;
+                    showNotification("Blockchain validation successful", "success");
+                } else {
+                    validationResult.className = 'validation-result validation-invalid';
+                    validationResult.innerHTML = `
+                        <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; margin-bottom: 10px;"></i>
+                        <h3>Blockchain Integrity Compromised</h3>
+                        <p>${result.message}</p>
+                    `;
+                    showNotification("Blockchain validation failed", "error");
+                }
+                
+            } catch (error) {
+                console.error('Error validating chain:', error);
+                showNotification("Error validating blockchain", "error");
+            } finally {
+                // Restore button
+                validateBtn.innerHTML = '<i class="fas fa-check-circle"></i> Validate Blockchain';
+                validateBtn.disabled = false;
+            }
+        }
+        
+        // Load rejected votes
+        async function loadRejectedVotes() {
+            if (!isConnected && !testMode) return;
+            
+            const loadBtn = document.getElementById('loadRejected');
+            const rejectedResponse = document.getElementById('rejectedResponse');
+            
+            // Show loading state
+            loadBtn.innerHTML = '<div class="loading"></div> Loading...';
+            loadBtn.disabled = true;
+            
+            try {
+                let result;
+                
+                if (testMode) {
+                    // Simulate rejected votes
+                    result = {
+                        status: 'success',
+                        totalRejected: testData.totalVotesRejected,
+                        invalidCount: Math.floor(testData.totalVotesRejected * 0.3),
+                        duplicateCount: Math.floor(testData.totalVotesRejected * 0.7),
+                        exportJSON: {
+                            rejectedVotes: [
+                                { voterTempID: 'TEST-001', candidate: 'Alice', reason: 'Duplicate', timestamp: Math.floor(Date.now() / 1000) - 3600 },
+                                { voterTempID: 'INVALID-001', candidate: '', reason: 'Invalid candidate', timestamp: Math.floor(Date.now() / 1000) - 1800 }
+                            ]
+                        }
+                    };
+                } else {
+                    const response = await fetch(API_BASE_URL + '/deadblock');
+                    result = await response.json();
+                }
+                
+                // Display result
+                rejectedResponse.textContent = JSON.stringify(result, null, 2);
+                
+                if (result.status === 'success') {
+                    rejectedResponse.className = 'info';
+                    showNotification(`Loaded ${result.totalRejected || 0} rejected votes`, "success");
+                } else {
+                    rejectedResponse.className = 'error';
+                }
+                
+            } catch (error) {
+                console.error('Error loading rejected votes:', error);
+                rejectedResponse.textContent = `Error: ${error.message}`;
+                rejectedResponse.className = 'error';
+                showNotification("Error loading rejected votes", "error");
+            } finally {
+                // Restore button
+                loadBtn.innerHTML = '<i class="fas fa-skull-crossbones"></i> Load Rejected Votes';
+                loadBtn.disabled = false;
+            }
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            notificationMessage.textContent = message;
+            notification.className = `notification show ${type}`;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Auto-refresh stats every 30 seconds when connected
+        setInterval(() => {
+            if (isConnected && !testMode) {
+                loadStatistics();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

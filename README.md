@@ -1,6 +1,6 @@
 ## 📚 Documentation
 
-- **[README.md](README1.md)**: This file - project overview and quick start
+- **[README1.md](README1.md)**: This file - project overview and quick start
 - **[ARCHITECTURE.md](ARCHITECTURE.md)**: Detailed system design, components, and patterns
 - **[docs/COMPLEXITY_ANALYSIS.md](docs/COMPLEXITY_ANALYSIS.md)**: Performance analysis and optimization strategies
 - **[docs/VALIDATION_GUIDE.md](docs/VALIDATION_GUIDE.md)**: Comprehensive validation testing guide
@@ -137,6 +137,18 @@ A production-ready, enterprise-grade C++ implementation of a blockchain-based vo
 - **Categorized Rejections**: Separates invalid votes from duplicates
 - **Export Capabilities**: CSV and JSON export for analysis
 - **Audit Transparency**: Complete record for election officials
+
+### REST API (Day 9) ⭐ NEW
+- **HTTP Endpoints**: RESTful API for vote submission and blockchain access
+- **POST /addVote**: Submit votes via HTTP with JSON
+- **GET /stats**: Real-time voting statistics
+- **GET /block/:index**: Retrieve specific blocks
+- **GET /deadblock**: Access rejected votes
+- **GET /validate**: Validate blockchain integrity
+- **Multi-threaded**: 8 concurrent worker threads
+- **Thread-safe**: Mutex-protected operations
+- **JSON Responses**: Structured response format
+- **Processing Metrics**: Response time tracking
 
 ### Developer Features
 - **Clean OOP Design**: Modular, testable, and maintainable architecture
@@ -302,6 +314,31 @@ g++ -std=c++11 -I./include \
 ./test_poa
 ```
 
+**REST API Server:**
+```bash
+g++ -std=c++14 -I./include -I./include/crow \
+    src/Vote.cpp \
+    src/SHA256Helper.cpp \
+    src/Block.cpp \
+    src/Blockchain.cpp \
+    src/VoteValidator.cpp \
+    src/DeadBlock.cpp \
+    src/VotingAPI.cpp \
+    api_server.cpp \
+    -o api_server \
+    -lssl -lcrypto -lpthread
+
+./api_server
+```
+
+**Test API:**
+```bash
+# In another terminal while server is running
+curl -X POST http://localhost:8080/addVote \
+  -H "Content-Type: application/json" \
+  -d '{"voterTempID":"VOTER-001","candidate":"Alice Johnson"}'
+```
+
 ## 🎯 Quick Start
 
 ### Basic Usage
@@ -433,6 +470,17 @@ make run
 - **Rejection mechanism**: Insufficient consensus = rejected
 - Complete audit trail of all approvals
 
+### VotingAPI Class ⭐ NEW
+- **REST API handler** for HTTP endpoints
+- Thread-safe vote processing with mutex
+- **POST /addVote**: Submit votes via JSON
+- **GET /stats**: Real-time statistics
+- **GET /block/:index**: Retrieve blocks
+- **GET /deadblock**: Rejected votes access
+- **GET /validate**: Chain integrity check
+- Automatic block finalization (100 votes/block)
+- Processing time tracking
+
 ### SHA256Helper Class
 - Wrapper for OpenSSL SHA-256 functions
 - Converts binary hash to hexadecimal string
@@ -542,24 +590,30 @@ blockchain.addVoteToPendingBlock(block2, vote2);  // ❌ REJECTED
 - [x] **VoteValidator with customizable rules**
 - [x] **Comprehensive validation test suite**
 - [x] **DeadBlock rejected vote tracking**
-- [x] **Proof of Authority (PoA) consensus** ⭐
-- [x] **Multi-signature block approval (3/4 validators)** ⭐
-- [x] **Validator management system** ⭐
+- [x] **Proof of Authority (PoA) consensus**
+- [x] **Multi-signature block approval (3/4 validators)**
+- [x] **Validator management system**
+- [x] **REST API with HTTP endpoints** ⭐
+- [x] **JSON request/response format** ⭐
+- [x] **Multi-threaded API server** ⭐
 - [x] **Complete documentation**
 
 ### 🚧 In Progress / Planned
 - [ ] Hash set optimization for O(1) duplicate detection
-- [ ] Integrate PoA consensus with main blockchain
+- [ ] Integrate PoA consensus with REST API
+- [ ] JWT authentication for API
+- [ ] Rate limiting for API endpoints
+- [ ] HTTPS/TLS support
+- [ ] WebSocket support for real-time updates
+- [ ] Frontend web interface
 - [ ] Proof of Work (PoW) consensus option
 - [ ] Merkle tree for efficient verification
 - [ ] Blockchain persistence (save/load to disk)
 - [ ] Digital signatures with real cryptography (ECDSA)
-- [ ] REST API interface
-- [ ] Web-based voting frontend
 - [ ] P2P network layer for distributed voting
 - [ ] Zero-knowledge proofs for privacy
-- [ ] Multi-signature authorization with hardware keys
 - [ ] Smart contracts for automated vote counting
+- [ ] Mobile app integration
 
 ### Performance Optimization Priority
 **Next Recommended**: 
