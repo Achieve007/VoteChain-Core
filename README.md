@@ -194,98 +194,103 @@ blockchain-voting/
 ## 🔧 Building the Project
 
 ### Prerequisites
-- **C++11 or later compiler** (GCC 4.8+, Clang 3.3+, MSVC 2015+)
+- **C++17 or later compiler** (GCC 7+, Clang 5+, MSVC 2017+)
+- **CMake 3.10+**
 - **OpenSSL library** installed
 
 **Install OpenSSL:**
-- **Ubuntu/Debian**: `sudo apt-get install libssl-dev`
-- **macOS**: `brew install openssl`
+- **Ubuntu/Debian**: `sudo apt-get install libssl-dev cmake build-essential`
+- **macOS**: `brew install openssl cmake`
 - **Windows**: Download from [slproweb.com/products/Win32OpenSSL.html](https://slproweb.com/products/Win32OpenSSL.html)
 
 ---
 
-### Option 1: Using Makefile (Recommended for Linux/Mac) ⚡
+### 🚀 Quick Build (All Platforms)
 
+**Windows:**
+```batch
+build.bat
+cd build\bin
+api_server.exe
+```
+
+**macOS/Linux:**
 ```bash
-# Build validation tests
-make
-
-# Run validation tests
-make run
-
-# Build and run PoA consensus tests
-make test_poa
-make run_poa
-
-# Clean build artifacts
-make clean
-
-# Rebuild from scratch
-make rebuild
-
-# Show help
-make help
+chmod +x build.sh
+./build.sh
+cd build/bin
+./api_server
 ```
 
 ---
 
-### Option 2: Using CMake (Cross-Platform) 🏗️
+### Option 1: Using Build Scripts (Recommended) ⚡
 
-```bash
-mkdir build && cd build
-cmake ..
-make
-
-# Run validation tests
-./voting_system
-
-# Run PoA tests
-./test_poa
+**Windows (PowerShell/CMD):**
+```batch
+build.bat
 ```
 
-**CMakeLists.txt:**
-```cmake
-cmake_minimum_required(VERSION 3.10)
-project(BlockchainVoting)
+**macOS/Linux (Bash):**
+```bash
+chmod +x build.sh
+./build.sh
+```
 
-set(CMAKE_CXX_STANDARD 11)
+**What the scripts do:**
+1. Create `build/` directory
+2. Configure CMake
+3. Build all targets
+4. Create executables in `build/bin/`
+5. Display build summary
 
-find_package(OpenSSL REQUIRED)
+---
 
-include_directories(include ${OPENSSL_INCLUDE_DIR})
+### Option 2: Using CMake Manually 🏗️
 
-# Validation tests
-add_executable(voting_system 
-    src/Vote.cpp
-    src/SHA256Helper.cpp
-    src/Block.cpp
-    src/Blockchain.cpp
-    src/VoteValidator.cpp
-    src/DeadBlock.cpp
-    main.cpp
-)
+**All Platforms:**
+```bash
+# Create and enter build directory
+mkdir build
+cd build
 
-# PoA consensus tests
-add_executable(test_poa
-    src/Vote.cpp
-    src/SHA256Helper.cpp
-    src/Block.cpp
-    src/Validator.cpp
-    src/ConsensusPoA.cpp
-    test_poa.cpp
-)
+# Configure (choose one based on platform)
+cmake ..                           # Linux/macOS with Make
+cmake .. -G "MinGW Makefiles"      # Windows with MinGW
+cmake .. -G "Visual Studio 17 2022" # Windows with VS 2022
 
-target_link_libraries(voting_system ${OPENSSL_LIBRARIES})
-target_link_libraries(test_poa ${OPENSSL_LIBRARIES})
+# Build
+cmake --build . --config Release
+
+# Run executables
+cd bin
+./voting_system      # or voting_system.exe on Windows
+./test_poa          # or test_poa.exe on Windows
+./api_server        # or api_server.exe on Windows
 ```
 
 ---
 
-### Option 3: Manual Compilation 🔧
+### Build Targets
+
+CMake creates **4 executables**:
+
+| Executable | Purpose | Command |
+|------------|---------|---------|
+| `voting_system` | Run validation tests (7 tests) | `./voting_system` |
+| `test_poa` | Run PoA consensus tests (6 tests) | `./test_poa` |
+| `api_server` | Start REST API server | `./api_server` |
+| `blockchain_server` | Start REST API server (alt) | `./blockchain_server` |
+
+All executables are in `build/bin/` directory.
+
+---
+
+### Option 3: Manual Compilation (Legacy) 🔧
 
 **Validation Tests:**
 ```bash
-g++ -std=c++11 -I./include \
+g++ -std=c++17 -I./include \
     src/Vote.cpp \
     src/SHA256Helper.cpp \
     src/Block.cpp \
@@ -301,7 +306,7 @@ g++ -std=c++11 -I./include \
 
 **PoA Consensus Tests:**
 ```bash
-g++ -std=c++11 -I./include \
+g++ -std=c++17 -I./include \
     src/Vote.cpp \
     src/SHA256Helper.cpp \
     src/Block.cpp \
@@ -315,8 +320,27 @@ g++ -std=c++11 -I./include \
 ```
 
 **REST API Server:**
+
+*Windows (PowerShell):*
+```powershell
+g++ -std=c++17 -I./include -I./include/crow `
+    src/Vote.cpp `
+    src/SHA256Helper.cpp `
+    src/Block.cpp `
+    src/Blockchain.cpp `
+    src/VoteValidator.cpp `
+    src/DeadBlock.cpp `
+    src/VotingAPI.cpp `
+    api_server.cpp `
+    -o api_server.exe `
+    -lssl -lcrypto -lpthread -lws2_32
+
+.\api_server.exe
+```
+
+*Linux/macOS:*
 ```bash
-g++ -std=c++14 -I./include -I./include/crow \
+g++ -std=c++17 -I./include -I./include/crow \
     src/Vote.cpp \
     src/SHA256Helper.cpp \
     src/Block.cpp \
