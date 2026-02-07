@@ -1,6 +1,6 @@
 ## 📚 Documentation
 
-- **[README1.md](README1.md)**: This file - project overview and quick start
+- **[README.md](README.md)**: This file - project overview and quick start
 - **[ARCHITECTURE.md](ARCHITECTURE.md)**: Detailed system design, components, and patterns
 - **[docs/COMPLEXITY_ANALYSIS.md](docs/COMPLEXITY_ANALYSIS.md)**: Performance analysis and optimization strategies
 - **[docs/VALIDATION_GUIDE.md](docs/VALIDATION_GUIDE.md)**: Comprehensive validation testing guide
