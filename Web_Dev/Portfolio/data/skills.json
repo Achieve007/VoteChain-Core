@@ -1,0 +1,42 @@
+[
+    {
+        "name": "HTML5",
+        "icon": "fab fa-html5",
+        "level": 95
+    },
+    {
+        "name": "CSS3",
+        "icon": "fab fa-css3-alt",
+        "level": 90
+    },
+    {
+        "name": "JavaScript",
+        "icon": "fab fa-js",
+        "level": 85
+    },
+    {
+        "name": "React",
+        "icon": "fab fa-react",
+        "level": 80
+    },
+    {
+        "name": "Node.js",
+        "icon": "fab fa-node-js",
+        "level": 75
+    },
+    {
+        "name": "Git",
+        "icon": "fab fa-git-alt",
+        "level": 85
+    },
+    {
+        "name": "UI/UX Design",
+        "icon": "fas fa-pencil-ruler",
+        "level": 70
+    },
+    {
+        "name": "Responsive Design",
+        "icon": "fas fa-mobile-alt",
+        "level": 90
+    }
+]
